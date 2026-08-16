@@ -1,0 +1,6 @@
+{
+  "appId": "com.watermix.studio",
+  "appName": "WaterMix Studio",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
