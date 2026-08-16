@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مازج الألوان — WaterMix Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F7FB;
+    --card:#FFFFFF;
+    --line:#ECEDF3;
+    --ink:#1E2340;
+    --ink-soft:#8890A6;
+    --purple:#7B4FC7;
+    --purple-2:#9B59B6;
+    --red:#E63946; --blue:#457BFF; --yellow:#FFD93D; --green:#2ECC71; --gray:#E6E9EE;
+    --shadow:0 10px 28px rgba(30,35,64,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Tajawal',sans-serif;
+    background-image:
+      radial-gradient(circle at 6% 4%, rgba(69,123,255,0.10), transparent 32%),
+      radial-gradient(circle at 96% 6%, rgba(255,217,61,0.14), transparent 30%),
+      radial-gradient(circle at 100% 100%, rgba(230,57,70,0.06), transparent 35%);
+    background-attachment:fixed;
+  }
+  h1,h2,h3{font-family:'Cairo',sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 18px 70px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:20px;}
+
+  /* HERO */
+  .hero{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .hero-left{display:flex;align-items:center;gap:16px;}
+  .venn{width:64px;height:64px;position:relative;flex-shrink:0;}
+  .venn span{position:absolute;width:38px;height:38px;border-radius:50%;mix-blend-mode:multiply;opacity:0.92;}
+  .venn .c1{background:var(--red);top:0;left:13px;}
+  .venn .c2{background:var(--blue);bottom:0;left:0;}
+  .venn .c3{background:var(--yellow);bottom:0;right:0;}
+  .hero-title{font-weight:900;font-size:30px;margin:0;color:var(--ink);}
+  .hero-sub{color:var(--ink-soft);font-size:13px;margin-top:3px;letter-spacing:0.5px;}
+  .hero-icons{display:flex;gap:10px;}
+  .icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);font-size:15px;}
+  .icon-btn:hover{color:var(--purple);border-color:var(--purple);}
+
+  /* PALETTE STRIP */
+  .strip-title{font-weight:700;font-size:13px;color:var(--ink-soft);margin:0 0 12px;}
+  .strip-row{display:flex;gap:20px;flex-wrap:wrap;}
+  .strip-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;padding:4px;}
+  .strip-dot{width:52px;height:52px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,0.6);transition:transform .15s;}
+  .strip-item.selected .strip-dot{outline:3px solid var(--purple);outline-offset:4px;}
+  .strip-item:hover .strip-dot{transform:translateY(-2px);}
+  .strip-hex{font-size:10px;color:var(--ink-soft);font-family:monospace;direction:ltr;}
+
+  /* GRID */
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px;}
+  @media(min-width:960px){.grid{grid-template-columns: 1fr 1fr 1.05fr;align-items:start;}}
+  .grid > .col{display:flex;flex-direction:column;gap:18px;}
+
+  h2.sect{font-size:16px;margin:0 0 4px;}
+  p.hint{color:var(--ink-soft);font-size:12px;margin:0 0 14px;}
+
+  /* TABS */
+  .tabs{display:flex;background:var(--gray);border-radius:14px;padding:4px;margin-bottom:16px;}
+  .tab{flex:1;text-align:center;padding:8px 0;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-soft);}
+  .tab.active{background:#fff;color:var(--purple);box-shadow:0 2px 6px rgba(0,0,0,0.06);}
+
+  /* DROPS */
+  .drop-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--line);}
+  .drop-row:last-child{border-bottom:none;}
+  .sw{width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+  .drop-label{flex:1;font-size:13px;font-weight:600;}
+  .drops-vis{display:flex;gap:2px;}
+  .di{width:9px;height:12px;border-radius:60% 60% 60% 60%/70% 70% 30% 30%;transform:rotate(180deg);opacity:.5;}
+  .di.on{opacity:1;}
+  .stepper{display:flex;gap:6px;}
+  .stepper button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px;color:var(--ink);}
+  .rm{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:14px;}
+  .add-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:16px;padding:5px 12px;font-size:11px;color:var(--ink-soft);cursor:pointer;}
+  .chip:hover{color:var(--purple);border-color:var(--purple);}
+  .empty{color:var(--ink-soft);font-size:12px;font-style:italic;}
+
+  .mode-row{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0;}
+  .mode-chip{font-size:11px;padding:5px 11px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;}
+  .mode-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .btn-row{display:flex;gap:10px;margin-top:6px;}
+  .btn{flex:1;border:none;border-radius:22px;padding:11px 0;font-family:Cairo;font-weight:700;font-size:13px;cursor:pointer;}
+  .btn-primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;box-shadow:0 6px 16px rgba(123,79,199,0.28);}
+  .btn-ghost{background:var(--gray);color:var(--ink);}
+  .btn:active{transform:scale(0.97);}
+
+  /* RESULT */
+  .result-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .blob-lg{width:200px;height:200px;margin:4px 0 10px;}
+  .blob-lg svg,.blob-sm svg{width:100%;height:100%;filter:drop-shadow(0 8px 16px rgba(30,35,64,0.16));}
+  .blob-sm{width:52px;height:52px;}
+  .result-name{font-weight:800;font-size:17px;margin:0 0 10px;}
+  .ratio-row{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;justify-content:center;}
+
+  .wheel-wrap{display:flex;flex-direction:column;align-items:center;margin-top:6px;}
+  .wheel{width:130px;height:130px;border-radius:50%;position:relative;
+    background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);
+    box-shadow:inset 0 0 0 6px #fff, 0 4px 10px rgba(0,0,0,0.1);}
+  .wheel-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--ink);transform:translate(-50%,-50%);}
+  .wheel-label{font-size:11px;color:var(--ink-soft);margin-top:8px;}
+
+  /* DETAILS CARD */
+  .details-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .details-blob{width:60px;height:60px;flex-shrink:0;}
+  .details-name-input{border:none;background:none;font-family:Cairo;font-weight:800;font-size:15px;color:var(--ink);width:100%;outline:none;border-bottom:1px dashed transparent;}
+  .details-name-input:focus{border-bottom-color:var(--purple);}
+  .values{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .val{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 10px;cursor:pointer;}
+  .val small{display:block;font-size:9px;color:var(--ink-soft);letter-spacing:1px;text-transform:uppercase;}
+  .val strong{font-size:12px;font-family:monospace;direction:ltr;display:block;}
+  .val.copied{border-color:var(--purple);}
+  .copy-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .copy-row button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 0;font-size:11px;cursor:pointer;color:var(--ink-soft);}
+  .copy-row button:hover{color:var(--purple);border-color:var(--purple);}
+
+  /* UPLOAD */
+  .dropzone{border:2px dashed var(--line);border-radius:16px;padding:18px;text-align:center;cursor:pointer;color:var(--ink-soft);font-size:12px;transition:border-color .15s;}
+  .dropzone:hover, .dropzone.drag{border-color:var(--purple);color:var(--purple);}
+  .dropzone input{display:none;}
+  .upload-preview{display:flex;align-items:center;gap:12px;margin-top:12px;}
+  .upload-preview img{width:56px;height:56px;object-fit:cover;border-radius:12px;border:1px solid var(--line);}
+  .extract-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:10px;margin-top:14px;}
+  .extract-item{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .extract-item .blob-sm{cursor:pointer;}
+  .extract-item small{font-size:9px;color:var(--ink-soft);font-family:monospace;}
+
+  /* PALETTE GRID */
+  .palette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:12px;}
+  .palette-item{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
+  .palette-item small{font-size:9px;color:var(--ink-soft);text-align:center;}
+
+  .tip-card{display:flex;gap:12px;align-items:flex-start;}
+  .tip-icon{font-size:20px;}
+  .tip-card p{margin:0;font-size:12px;color:var(--ink-soft);line-height:1.7;}
+
+  /* AUTO TAB */
+  .auto-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .auto-row input[type=color]{width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;background:none;padding:0;}
+  .auto-row input[type=text]{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-family:monospace;direction:ltr;font-size:13px;}
+  .suggest-result{background:var(--bg);border-radius:14px;padding:12px;margin-top:10px;display:none;}
+  .suggest-result.show{display:block;}
+  .suggest-title{font-size:12px;color:var(--ink-soft);margin:0 0 8px;}
+
+  footer.toolbar{margin-top:26px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  .quick-drops{display:flex;gap:6px;}
+  .quick-drops .di{width:12px;height:16px;cursor:pointer;opacity:1;}
+  .foot-icons{display:flex;gap:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card hero">
+    <div class="hero-left">
+      <div class="venn"><span class="c1"></span><span class="c2"></span><span class="c3"></span></div>
+      <div>
+        <h1 class="hero-title">مازج الألوان</h1>
+        <div class="hero-sub">اكتشف . امزج . ابتكر</div>
+      </div>
+    </div>
+    <div class="hero-icons">
+      <button class="icon-btn" title="المفضلة">★</button>
+      <button class="icon-btn" title="المشاريع">▤</button>
+      <button class="icon-btn" title="الإعدادات">⚙</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <p class="strip-title">الألوان الأساسية (مائية) — اضغط لإضافة أو إزالة من المزيج</p>
+    <div class="strip-row" id="stripRow"></div>
+  </div>
+
+  <div class="grid">
+
+    <!-- COL 1: MIXER -->
+    <div class="col">
+      <div class="card">
+        <h2 class="sect">المازج</h2>
+        <p class="hint">تحكم بعدد القطرات، أو اطلب اقتراحاً تلقائياً للون هدف.</p>
+        <div class="tabs">
+          <div class="tab active" data-tab="manual">مزج يدوي</div>
+          <div class="tab" data-tab="auto">مزج تلقائي</div>
+        </div>
+
+        <div id="manualPane">
+          <div id="dropsList"></div>
+          <div class="add-chips" id="addChips"></div>
+          <div class="mode-row" id="modeRow"></div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" id="randomBtn">عشوائي</button>
+            <button class="btn btn-primary" id="saveBtn">حفظ الوصفة</button>
+          </div>
+        </div>
+
+        <div id="autoPane" style="display:none;">
+          <div class="auto-row">
+            <input type="color" id="targetColorPicker" value="#7B4FC7">
+            <input type="text" id="targetColorHex" value="#7B4FC7">
+          </div>
+          <button class="btn btn-primary" style="width:100%;" id="suggestBtn">اقترح وصفة</button>
+          <div class="suggest-result" id="suggestResult">
+            <p class="suggest-title">أفضل اقتراح:</p>
+            <div id="suggestPreview"></div>
+            <button class="btn btn-ghost" style="width:100%;margin-top:10px;" id="applySuggestBtn">تطبيق على المزيج اليدوي</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 2: RESULT -->
+    <div class="col">
+      <div class="card result-wrap">
+        <h2 class="sect" style="align-self:flex-start;">اللون الناتج</h2>
+        <div class="blob-lg" id="resultBlob"></div>
+        <p class="result-name" id="resultNameDisplay">امزج لتكتشف لوناً</p>
+        <div class="ratio-row" id="ratioRow"></div>
+        <div class="wheel-wrap">
+          <div class="wheel"><div class="wheel-dot" id="wheelDot"></div></div>
+          <div class="wheel-label">موضع اللون على العجلة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 3: DISCOVER -->
+    <div class="col">
+      <div class="card">
+        <h2 class="sect">تفاصيل اللون</h2>
+        <div class="details-top">
+          <div class="details-blob" id="detailsBlob"></div>
+          <input class="details-name-input" id="nameInput" value="امزج لتكتشف لوناً">
+        </div>
+        <div class="values" id="valuesGrid"></div>
+        <div class="copy-row" id="copyRow"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="sect">استخراج الألوان من صورة</h2>
+        <p class="hint">ارفع صورة ليحلّل التطبيق ألوانها ويقترح لوحة مائية منها.</p>
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="imgInput" accept="image/*">
+          <div id="dzText">📷 اضغط لرفع صورة، أو اسحبها هنا</div>
+        </label>
+        <div class="upload-preview" id="uploadPreview" style="display:none;"></div>
+        <div class="extract-grid" id="extractGrid"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="sect">لوحة الألوان المكتشفة</h2>
+        <p class="hint">اضغط على وصفة محفوظة لإعادة تحميلها في المازج.</p>
+        <div class="palette-grid" id="paletteGrid"></div>
+      </div>
+
+      <div class="card tip-card">
+        <div class="tip-icon">💧</div>
+        <p>كل قطرة تضيف لمسة لونية جديدة. جرّب زيادة أو تقليل عدد القطرات للحصول على درجات مختلفة.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="toolbar card">
+    <div class="quick-drops" id="quickDrops"></div>
+    <div class="foot-icons">
+      <button class="icon-btn" id="footSave">💾</button>
+      <button class="icon-btn">♡</button>
+      <button class="icon-btn">⇩</button>
+      <button class="icon-btn">⋮</button>
+    </div>
+  </footer>
+
+</div>
+
+<canvas id="hiddenCanvas" style="display:none;"></canvas>
+
+<script>
+const BASE_COLORS = [
+  {id:'red', name:'أحمر', hex:'#E63946'},
+  {id:'blue', name:'أزرق', hex:'#457BFF'},
+  {id:'yellow', name:'أصفر', hex:'#FFD93D'},
+];
+const EXTRA_COLORS = [
+  {id:'green', name:'أخضر', hex:'#2ECC71'},
+  {id:'purple', name:'بنفسجي', hex:'#9B59B6'},
+  {id:'orange', name:'برتقالي', hex:'#F2994A'},
+  {id:'pink', name:'وردي', hex:'#F45B9A'},
+  {id:'black', name:'أسود', hex:'#2B2622'},
+  {id:'gray', name:'رمادي', hex:'#E6E9EE'},
+];
+const ALL_COLORS = [...BASE_COLORS, ...EXTRA_COLORS];
+const colorById = id => ALL_COLORS.find(c=>c.id===id);
+let customCounter = 0;
+
+let mix = { red: 3, blue: 4 };
+let mode = 'watercolor';
+let activeTab = 'manual';
+let lastResult = null;
+const MODES = [
+  {id:'dry', label:'جاف'}, {id:'wet', label:'رطب'},
+  {id:'watercolor', label:'مائي'}, {id:'dense', label:'كثيف'},
+];
+
+function hexToRgb(hex){ const h=hex.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+function rgbToHex([r,g,b]){ return '#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase(); }
+function rgbToHsl([r,g,b]){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;} else{
+    const d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}
+    h/=6;
+  }
+  return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+}
+function rgbToCmyk([r,g,b]){
+  r/=255;g/=255;b/=255; const k=1-Math.max(r,g,b);
+  if(k===1) return [0,0,0,100];
+  const c=(1-r-k)/(1-k), m=(1-g-k)/(1-k), y=(1-b-k)/(1-k);
+  return [Math.round(c*100),Math.round(m*100),Math.round(y*100),Math.round(k*100)];
+}
+function mixColors(entries){
+  const total = entries.reduce((s,e)=>s+e.drops,0);
+  if(total===0) return {rgb:[255,255,255]};
+  const GAMMA=2.2; let acc=[0,0,0];
+  entries.forEach(e=>{
+    const w=e.drops/total; const rgb=hexToRgb(e.hex);
+    acc[0]+=Math.pow(rgb[0]/255,GAMMA)*w; acc[1]+=Math.pow(rgb[1]/255,GAMMA)*w; acc[2]+=Math.pow(rgb[2]/255,GAMMA)*w;
+  });
+  return {rgb: acc.map(v=>Math.pow(v,1/GAMMA)*255)};
+}
+function nameForColor(hsl){
+  const [h,s,l]=hsl;
+  if(s<12) return l>85?'أبيض مائي':l<20?'أسود مائي':'رمادي مائي';
+  let base;
+  if(h<15||h>=345) base='أحمر'; else if(h<45) base='برتقالي'; else if(h<70) base='أصفر';
+  else if(h<160) base='أخضر'; else if(h<200) base='سماوي'; else if(h<255) base='أزرق';
+  else if(h<290) base='بنفسجي'; else base='وردي';
+  const tone = l>70?'فاتح':l<35?'داكن':'هادئ';
+  return `${base} مائي ${tone}`;
+}
+function watercolorBlobSVG(hex, seed){
+  const id='f'+seed+Math.random().toString(36).slice(2,7);
+  const opacity = mode==='dry'?0.98: mode==='dense'?1: mode==='wet'?0.72:0.85;
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="${id}"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="${seed}" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/></filter>
+      <radialGradient id="g${id}" cx="40%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="${hex}" stop-opacity="${Math.min(1,opacity+0.1)}"/>
+        <stop offset="100%" stop-color="${hex}" stop-opacity="${opacity-0.15}"/>
+      </radialGradient>
+    </defs>
+    <circle cx="50" cy="50" r="40" fill="url(#g${id})" filter="url(#${id})"/>
+  </svg>`;
+}
+function copyToClipboard(text, el){
+  navigator.clipboard?.writeText(text).catch(()=>{});
+  if(el){ el.classList.add('copied'); setTimeout(()=>el.classList.remove('copied'),700); }
+}
+
+/* ---------- RENDER: STRIP ---------- */
+function renderStrip(){
+  const row = document.getElementById('stripRow');
+  row.innerHTML='';
+  ALL_COLORS.forEach(c=>{
+    const selected = mix[c.id]!==undefined;
+    const item=document.createElement('button');
+    item.className='strip-item'+(selected?' selected':'');
+    item.innerHTML=`<div class="strip-dot" style="background:${c.hex}"></div><div class="strip-hex">${c.hex}</div>`;
+    item.onclick=()=>{ if(mix[c.id]===undefined) mix[c.id]=1; else delete mix[c.id]; renderAll(); };
+    row.appendChild(item);
+  });
+}
+
+/* ---------- RENDER: MANUAL TAB ---------- */
+function renderDrops(){
+  const list=document.getElementById('dropsList');
+  const ids=Object.keys(mix);
+  if(ids.length===0){ list.innerHTML='<p class="empty">اختر لوناً واحداً على الأقل من الشريط أعلاه.</p>'; return; }
+  list.innerHTML='';
+  ids.forEach(id=>{
+    const c=colorById(id); const drops=mix[id];
+    const row=document.createElement('div'); row.className='drop-row';
+    row.innerHTML=`
+      <div class="sw" style="background:${c.hex}"></div>
+      <div class="drop-label">${c.name}</div>
+      <div class="drops-vis">${Array.from({length:6}).map((_,i)=>`<div class="di ${i<drops?'on':''}" style="background:${c.hex}"></div>`).join('')}</div>
+      <div class="stepper"><button data-a="m">−</button><button data-a="p">+</button></div>
+      <button class="rm">✕</button>`;
+    row.querySelector('[data-a=m]').onclick=()=>{ if(mix[id]>1) mix[id]--; else delete mix[id]; renderAll(); };
+    row.querySelector('[data-a=p]').onclick=()=>{ if(mix[id]<6) mix[id]++; renderAll(); };
+    row.querySelector('.rm').onclick=()=>{ delete mix[id]; renderAll(); };
+    list.appendChild(row);
+  });
+}
+function renderAddChips(){
+  const row=document.getElementById('addChips'); row.innerHTML='';
+  ALL_COLORS.forEach(c=>{
+    if(mix[c.id]!==undefined) return;
+    const chip=document.createElement('button'); chip.className='chip'; chip.textContent='+ '+c.name;
+    chip.onclick=()=>{ mix[c.id]=1; renderAll(); };
+    row.appendChild(chip);
+  });
+}
+function renderModes(){
+  const row=document.getElementById('modeRow'); row.innerHTML='';
+  MODES.forEach(m=>{
+    const chip=document.createElement('button'); chip.className='mode-chip'+(mode===m.id?' active':'');
+    chip.textContent=m.label; chip.onclick=()=>{ mode=m.id; renderAll(); };
+    row.appendChild(chip);
+  });
+}
+
+/* ---------- RENDER: RESULT + DETAILS ---------- */
+function renderResult(){
+  const ids=Object.keys(mix);
+  const blobLg=document.getElementById('resultBlob');
+  const blobSm=document.getElementById('detailsBlob');
+  const nameDisplay=document.getElementById('resultNameDisplay');
+  const nameInput=document.getElementById('nameInput');
+  const ratioRow=document.getElementById('ratioRow');
+  const valuesGrid=document.getElementById('valuesGrid');
+  const copyRow=document.getElementById('copyRow');
+  const wheelDot=document.getElementById('wheelDot');
+
+  if(ids.length===0){
+    blobLg.innerHTML=watercolorBlobSVG('#E6E9EE','empty1');
+    blobSm.innerHTML=watercolorBlobSVG('#E6E9EE','empty2');
+    nameDisplay.textContent='امزج لتكتشف لوناً'; nameInput.value='امزج لتكتشف لوناً';
+    ratioRow.innerHTML=''; valuesGrid.innerHTML=''; copyRow.innerHTML='';
+    wheelDot.style.top='50%'; wheelDot.style.left='50%';
+    lastResult=null; return;
+  }
+  const entries=ids.map(id=>({id,hex:colorById(id).hex,drops:mix[id]}));
+  const total=entries.reduce((s,e)=>s+e.drops,0);
+  const {rgb}=mixColors(entries);
+  const hex=rgbToHex(rgb); const hsl=rgbToHsl(rgb); const cmyk=rgbToCmyk(rgb);
+  const autoName=nameForColor(hsl);
+  lastResult={hex,rgb,hsl,cmyk,entries,name:autoName};
+
+  blobLg.innerHTML=watercolorBlobSVG(hex,'res1');
+  blobSm.innerHTML=watercolorBlobSVG(hex,'res2');
+  nameDisplay.textContent=autoName;
+  if(!nameInput.dataset.edited) nameInput.value=autoName;
+
+  ratioRow.innerHTML=entries.map(e=>Array.from({length:e.drops}).map(()=>`<div class="di on" style="background:${e.hex};width:11px;height:15px;"></div>`).join('')).join('');
+
+  valuesGrid.innerHTML=`
+    <div class="val" data-c="${hex}"><small>HEX</small><strong>${hex}</strong></div>
+    <div class="val" data-c="rgb(${rgb.map(v=>Math.round(v)).join(', ')})"><small>RGB</small><strong>${rgb.map(v=>Math.round(v)).join(', ')}</strong></div>
+    <div class="val" data-c="hsl(${hsl.join(', ')})"><small>HSL</small><strong>${hsl[0]}° ${hsl[1]}% ${hsl[2]}%</strong></div>
+    <div class="val" data-c="cmyk(${cmyk.join(', ')})"><small>CMYK</small><strong>${cmyk.join(' ')}</strong></div>`;
+  valuesGrid.querySelectorAll('.val').forEach(v=>v.onclick=()=>copyToClipboard(v.dataset.c,v));
+
+  copyRow.innerHTML=`<button data-c="${hex}">HEX</button><button data-c="${rgb.map(v=>Math.round(v)).join(', ')}">RGB</button><button data-c="${cmyk.join(', ')}">CMYK</button><button data-c="${hsl.join(', ')}">HSL</button>`;
+  copyRow.querySelectorAll('button').forEach(b=>b.onclick=()=>copyToClipboard(b.dataset.c,b));
+
+  const angle=hsl[0]*Math.PI/180; const radius=(hsl[1]/100)*58;
+  wheelDot.style.left=(65+radius*Math.cos(angle))+'px';
+  wheelDot.style.top=(65+radius*Math.sin(angle))+'px';
+}
+
+/* ---------- SAVE / PALETTE ---------- */
+function saveRecipe(){
+  if(!lastResult) return;
+  const store=JSON.parse(localStorage.getItem('watermix_recipes_v2')||'[]');
+  store.unshift({ name:document.getElementById('nameInput').value||lastResult.name, hex:lastResult.hex, colors:lastResult.entries.map(e=>({hex:e.hex,drops:e.drops})), mode, created_at:new Date().toISOString() });
+  localStorage.setItem('watermix_recipes_v2', JSON.stringify(store.slice(0,60)));
+  renderPalette();
+}
+function renderPalette(){
+  const grid=document.getElementById('paletteGrid');
+  const store=JSON.parse(localStorage.getItem('watermix_recipes_v2')||'[]');
+  if(store.length===0){ grid.innerHTML='<p class="empty">لا توجد وصفات محفوظة بعد.</p>'; return; }
+  grid.innerHTML='';
+  store.forEach((r,i)=>{
+    const item=document.createElement('div'); item.className='palette-item';
+    item.innerHTML=`<div class="blob-sm">${watercolorBlobSVG(r.hex,'p'+i)}</div><small>${r.name}</small>`;
+    item.onclick=()=>{
+      mix={};
+      r.colors.forEach((c,idx)=>{
+        let found = ALL_COLORS.find(ac=>ac.hex.toLowerCase()===c.hex.toLowerCase());
+        if(!found){ found={id:'custom'+(customCounter++),name:'مخصص',hex:c.hex}; ALL_COLORS.push(found); }
+        mix[found.id]=c.drops;
+      });
+      mode=r.mode||'watercolor';
+      document.getElementById('nameInput').dataset.edited='';
+      renderAll();
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    grid.appendChild(item);
+  });
+}
+
+/* ---------- IMAGE COLOR EXTRACTION ---------- */
+function extractColorsFromImage(img){
+  const canvas=document.getElementById('hiddenCanvas');
+  const size=80;
+  canvas.width=size; canvas.height=size;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,size,size);
+  const scale=Math.min(size/img.width, size/img.height);
+  const w=img.width*scale, h=img.height*scale;
+  ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);
+  const data=ctx.getImageData(0,0,size,size).data;
+  const buckets={};
+  for(let i=0;i<data.length;i+=4){
+    const a=data[i+3]; if(a<128) continue;
+    const r=Math.round(data[i]/24)*24, g=Math.round(data[i+1]/24)*24, b=Math.round(data[i+2]/24)*24;
+    const key=r+','+g+','+b;
+    buckets[key]=(buckets[key]||0)+1;
+  }
+  let sorted=Object.entries(buckets).sort((a,b)=>b[1]-a[1]).map(([k])=>k.split(',').map(Number));
+  const picked=[];
+  for(const rgb of sorted){
+    if(picked.length>=6) break;
+    const tooClose = picked.some(p=>{
+      const d=Math.sqrt((p[0]-rgb[0])**2+(p[1]-rgb[1])**2+(p[2]-rgb[2])**2);
+      return d<40;
+    });
+    if(!tooClose) picked.push(rgb);
+  }
+  return picked.map(rgb=>rgbToHex(rgb));
+}
+function setupUpload(){
+  const input=document.getElementById('imgInput');
+  const dz=document.getElementById('dropzone');
+  const preview=document.getElementById('uploadPreview');
+  const extractGrid=document.getElementById('extractGrid');
+
+  function handleFile(file){
+    if(!file || !file.type.startsWith('image/')) return;
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{
+      preview.style.display='flex';
+      preview.innerHTML=`<img src="${url}"><div style="font-size:12px;color:var(--ink-soft);">تم تحليل ${file.name}</div>`;
+      const hexes=extractColorsFromImage(img);
+      extractGrid.innerHTML='';
+      hexes.forEach((hex,i)=>{
+        const item=document.createElement('div'); item.className='extract-item';
+        item.innerHTML=`<div class="blob-sm">${watercolorBlobSVG(hex,'ex'+i)}</div><small>${hex}</small>`;
+        item.querySelector('.blob-sm').onclick=()=>{
+          const id='custom'+(customCounter++);
+          ALL_COLORS.push({id,name:'من الصورة',hex});
+          mix[id]=2;
+          renderAll();
+        };
+        extractGrid.appendChild(item);
+      });
+    };
+    img.src=url;
+  }
+  input.addEventListener('change', e=>handleFile(e.target.files[0]));
+  dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+}
+
+/* ---------- AUTO SUGGEST ---------- */
+function suggestRecipe(targetHex){
+  const target=hexToRgb(targetHex);
+  const pool=ALL_COLORS.filter(c=>!c.id.startsWith('custom'));
+  let best=null;
+  function evalCombo(colors, drops){
+    const entries=colors.map((c,i)=>({hex:c.hex,drops:drops[i]}));
+    const {rgb}=mixColors(entries);
+    const dist=Math.sqrt((rgb[0]-target[0])**2+(rgb[1]-target[1])**2+(rgb[2]-target[2])**2);
+    if(!best || dist<best.dist) best={dist, colors, drops:[...drops], rgb};
+  }
+  // pairs
+  for(let i=0;i<pool.length;i++) for(let j=i+1;j<pool.length;j++){
+    for(let d1=1;d1<=6;d1++) for(let d2=1;d2<=6;d2++) evalCombo([pool[i],pool[j]],[d1,d2]);
+  }
+  // triples (coarser step for performance)
+  for(let i=0;i<pool.length;i++) for(let j=i+1;j<pool.length;j++) for(let k=j+1;k<pool.length;k++){
+    for(let d1=1;d1<=5;d1+=2) for(let d2=1;d2<=5;d2+=2) for(let d3=1;d3<=5;d3+=2) evalCombo([pool[i],pool[j],pool[k]],[d1,d2,d3]);
+  }
+  return best;
+}
+function setupAuto(){
+  const picker=document.getElementById('targetColorPicker');
+  const hexInput=document.getElementById('targetColorHex');
+  picker.oninput=()=>{ hexInput.value=picker.value.toUpperCase(); };
+  hexInput.oninput=()=>{ if(/^#[0-9A-Fa-f]{6}$/.test(hexInput.value)) picker.value=hexInput.value; };
+
+  document.getElementById('suggestBtn').onclick=()=>{
+    const target = /^#[0-9A-Fa-f]{6}$/.test(hexInput.value) ? hexInput.value : picker.value;
+    const best=suggestRecipe(target);
+    const box=document.getElementById('suggestResult');
+    const prev=document.getElementById('suggestPreview');
+    box.classList.add('show');
+    const resultHex=rgbToHex(best.rgb);
+    prev.innerHTML=`
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="blob-sm">${watercolorBlobSVG(resultHex,'sg1')}</div>
+        <div style="font-size:12px;">
+          ${best.colors.map((c,i)=>`<div>${c.name}: ${best.drops[i]} قطرة</div>`).join('')}
+          <div style="color:var(--ink-soft);margin-top:4px;">النتيجة التقريبية: ${resultHex}</div>
+        </div>
+      </div>`;
+    box.dataset.colors=JSON.stringify(best.colors.map(c=>c.id));
+    box.dataset.drops=JSON.stringify(best.drops);
+  };
+  document.getElementById('applySuggestBtn').onclick=()=>{
+    const box=document.getElementById('suggestResult');
+    if(!box.dataset.colors) return;
+    const ids=JSON.parse(box.dataset.colors); const drops=JSON.parse(box.dataset.drops);
+    mix={}; ids.forEach((id,i)=>mix[id]=drops[i]);
+    document.querySelector('.tab[data-tab=manual]').click();
+    renderAll();
+  };
+}
+
+/* ---------- TABS / MISC ---------- */
+function setupTabs(){
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.onclick=()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active'); activeTab=t.dataset.tab;
+      document.getElementById('manualPane').style.display = activeTab==='manual'?'block':'none';
+      document.getElementById('autoPane').style.display = activeTab==='auto'?'block':'none';
+    };
+  });
+}
+function renderQuickDrops(){
+  const row=document.getElementById('quickDrops'); row.innerHTML='';
+  ALL_COLORS.slice(0,8).forEach(c=>{
+    const d=document.createElement('div'); d.className='di'; d.style.background=c.hex; d.title=c.name;
+    d.onclick=()=>{ mix[c.id]=(mix[c.id]||0)+1; renderAll(); };
+    row.appendChild(d);
+  });
+}
+
+function renderAll(){
+  renderStrip(); renderDrops(); renderAddChips(); renderModes(); renderResult(); renderQuickDrops();
+}
+
+document.getElementById('saveBtn').onclick=saveRecipe;
+document.getElementById('footSave').onclick=saveRecipe;
+document.getElementById('randomBtn').onclick=()=>{
+  mix={};
+  const shuffled=[...ALL_COLORS].filter(c=>!c.id.startsWith('custom')).sort(()=>Math.random()-0.5);
+  const n=2+Math.floor(Math.random()*2);
+  for(let i=0;i<n;i++) mix[shuffled[i].id]=1+Math.floor(Math.random()*5);
+  renderAll();
+};
+document.getElementById('nameInput').addEventListener('input', e=>{ e.target.dataset.edited='1'; });
+
+setupTabs(); setupUpload(); setupAuto();
+renderAll(); renderPalette();
+</script>
+</body>
+</html>
